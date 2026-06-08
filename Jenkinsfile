@@ -1,5 +1,8 @@
 pipeline {
   agent any
+  tools {
+        nodejs 'Node26'   // must match the name you set in Tools
+  }
   stages {
     stage('Checkout') {
       steps {
