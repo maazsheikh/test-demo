@@ -1,7 +1,7 @@
 pipeline {
   agent any
   environment {
-    DOCKER_IMAGE = 'YOUR-USERNAME/jenkins-demo'
+    DOCKER_IMAGE = 'maazsheikh4/jenkins-test-demo'
     IMAGE_TAG = "${BUILD_NUMBER}"
   }
   stages {
@@ -24,7 +24,7 @@ pipeline {
 
     stage('Push to Hub') {
       steps {
-        withCredentials([usernamePassword(credentialsId: 'dockerhub-creds',
+        withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials',
           usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
           sh 'docker login -u $DOCKER_USER -p $DOCKER_PASS'
           sh 'docker push $DOCKER_IMAGE:$IMAGE_TAG'
@@ -34,10 +34,10 @@ pipeline {
     }
     stage('Deploy') {
       steps {
-        sh 'docker stop jenkins-demo || true'
-        sh 'docker rm jenkins-demo || true'
+        sh 'docker stop jenkins-test-demo || true'
+        sh 'docker rm jenkins-test-demo || true'
         sh 'docker pull $DOCKER_IMAGE:latest'
-        sh 'docker run -d -p 3000:3000 --name jenkins-demo $DOCKER_IMAGE:latest'
+        sh 'docker run -d -p 3000:3000 --name jenkins-test-demo $DOCKER_IMAGE:latest'
         echo 'App live at localhost:3000!'
       }
     }
@@ -47,4 +47,3 @@ pipeline {
     failure { echo 'Check logs!' }
   }
 }
-
